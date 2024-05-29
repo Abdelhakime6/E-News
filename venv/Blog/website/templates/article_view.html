@@ -1,0 +1,237 @@
+{% load static %}
+{% include 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/viewArticle.css' %}">
+    <script src="https://kit.fontawesome.com/9271807d57.js" crossorigin="anonymous"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+   <script src="https://kit.fontawesome.com/9271807d57.js" crossorigin="anonymous"></script>
+    <title>Article Detail</title>
+</head>
+<body>
+    <div class="login" hidden>
+        <h1>Login</h1>
+        <form action="{% url 'login' %}" method="POST">
+            {% csrf_token %}
+            {{ login_form.as_p }}
+            <input type="submit" value="Login">
+        </form>
+        <button type="button" class="btn-close btn-close-white" aria-label="Close" onclick="hide()"></button>   
+    </div>
+    <main class="all">
+        <div class="article-container">
+            <img src="{{ article.image.url|striptags }}" alt="{{ article.title|striptags }}"> 
+            <h1>{{ article.title|striptags }}</h1>
+            <div class="content">
+                <p class="content-text">{{ article.content|safe }}</p>
+                        </div>
+            <div class="tags">
+                {% for tag in article.tags.all %}
+                    <span class="tag">{{ tag }}</span>
+                {% endfor %}
+            </div>
+            
+            <div class="auteur">
+                <div class="author-details">
+                    <p>Posted By: <span class="author-name">{{ article.journalist_users.user.username|striptags }}</span> on <span class="article-date">{{ article.created_at }}</span></p>
+                </div>
+                <span class="author-bio">{{ article.journalist_users.user.bio|safe }}</span>
+            </div>
+            
+            <div class="rating">
+                <form class="liking" action="{% url 'like_article' article.pk %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit", name="article_id", value="{{ article.id }}"><i class="fa-regular fa-thumbs-up"></i></button>
+                </form>
+                <span id="like_counter">{{article.like_count}}</span>
+                <div></div>
+                <form class="disliking" action="{% url 'dislike_article' article.pk %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit", name="article_id", value="{{ article.pk }}"><i class="fa-regular fa-thumbs-down"></i></button>
+                </form>
+                <span id="dislike_counter">{{article.dislike_count}}</span>
+            </div>
+            <hr>
+            <div class="comments">
+                <h3>COMMENTS</h3>
+                {% if not article.comments.all %}
+                    No comment yet
+                {% else %}
+                    <div class="comments-container" style="overflow-wrap: break-word; word-wrap: break-word;" id="comment-list">
+                       <ul class="cmts_ul"> {% for comment in article.comments.all %}
+                            <li class="comment">
+                                <p id="author"><strong>{{ comment.name }}</strong> says:</p> 
+                                <p id="body">{{ comment.body |striptags }}</p>
+                            </li>
+                            <hr style="background-color: #91273E;">
+                        {% endfor %}</ul>
+                    </div>
+                {% endif %}
+                <form id="comment-form" class="comment-form" method="post" action="{% url 'add_comment_ajax' article.slug %}">
+                    {% csrf_token %}
+                    <textarea class="comment-text" id="id_body" name="body" placeholder="Write your comment here..." required></textarea>
+                    <input id="add-comment-btn" type="submit" value="Add Comment" name="comment-btn">
+                </form>
+            </div>
+        </div>
+    </main>
+
+<div class="extra_des">
+        
+    <div class="part1">
+        <hr>
+       <div class="sep"></div>
+      <h2>Popular Article</h2>
+      <div class="mini-cards">
+        {% for article in popular|slice:":4" %} 
+        <div class="mini_card">
+            <img src="{{ article.image.url }}" alt="{{ article.title }}">
+          <div class="mini_card_content">
+            <a href="/article/{{ article.slug }}" style="color: #000000;"><h3 style="font-size: 1.5rem;">{{ article.title }}</h3></a>
+            <p>By <span style="color: grey;">{{ article.journalist_users.user_name}} : {{article.created_at}}</span></p>
+
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="part2">
+        <hr>
+       <div class="sep"></div>
+      
+       <div class="column">
+        <h3> categories </h3><br>
+        <ul >
+          {% for tag in tags|slice:":6" %}
+              <li><a href="{% url 'tagged_articles' tag.slug %}">{{ tag.name }}</a></li>
+              <hr>
+          {% endfor %}
+      </ul>
+      </div>
+    </div>
+    </div>
+
+
+    <footer class="text-center text-white d-flex flex-column justify-content-between" style="background-color: #91273E; font-size: 14px; height: auto;">
+        <div class="d-flex justify-content-center align-items-center" style="margin: 15px 0;">
+    
+                {% if user.journalist_user %}
+                <ul style="display: flex; margin-bottom: 10px;">
+                    <p style="margin-top: 10px;">Follow us:</p>
+                <li style="margin-left: 10px;"><i class="fa-brands fa-instagram"></i></li>
+                <li style="margin-left: 10px;" ><i class="fa-brands fa-x-twitter"></i></li>
+                <li style="margin-left: 10px;" ><i class="fa-brands fa-facebook"></i></li>
+                <li style="margin-left: 10px;" ><i class="fa-brands fa-tiktok"></i></li>
+                </ul>
+                {% else %}
+    
+            <a href="{% url 'journalist-signup' %}"><span style="list-style: none; text-decoration: none; color: aliceblue;" class="me-3"> Become a journalist?</span>
+            <button  type="button" class="btn btn-outline-light btn-rounded" >APPLY HERE!</button></a>
+            <ul style="display: flex; margin-bottom: 10px;margin-left: 20px;">
+                <p style="margin-top: 10px;">Follow us:</p>
+                <li style="margin-left: 15px; margin-top: 10px;"><i class="fa-brands fa-instagram"></i></li>
+                <li style="margin-left: 15px;margin-top: 10px;" ><i class="fa-brands fa-x-twitter"></i></li>
+                <li style="margin-left: 15px;margin-top: 10px;" ><i class="fa-brands fa-facebook"></i></li>
+                <li style="margin-left: 15px;margin-top: 10px;" ><i class="fa-brands fa-tiktok"></i></li>
+                </ul>
+    
+            {% endif %}
+            {% csrf_token %}
+    
+        </div>
+        <div class="text-center p-2" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2024 Copyright:
+            <a class="text-white" href="https://mdbootstrap.com/">E-NEWS.com</a>
+        </div>
+    </footer>
+    <script src="https://kit.fontawesome.com/9271807d57.js" crossorigin="anonymous"></script>
+
+<script>
+    $('.liking').submit(function(e){
+        console.log("test111");
+
+        e.preventDefault();
+        var articleId = $(this).find('button[name="article_id"]').val();
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'like_article' pk=article.id %}",
+            data: {
+                article_id: articleId,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                action: 'post'
+            },
+            success: function(json) {
+                $('#like_counter').text(json.result1);
+                $('#dislike_counter').text(json.result2);
+
+                console.log(json);
+            },
+            error: function(xhr, errmsg, err){}
+        });
+    });
+    $('.disliking').submit(function(e){
+        console.log("test222");
+
+        e.preventDefault();
+        var articleId = $(this).find('button[name="article_id"]').val();
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'dislike_article' pk=article.id %}",
+            data: {
+                article_id: articleId,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                action: 'post'
+            },
+            success: function(json) {
+                $('#like_counter').text(json.result1);
+                $('#dislike_counter').text(json.result2);
+                console.log(json);
+            },
+            error: function(xhr, errmsg, err){}
+        });
+    });
+
+    function show() {
+            document.getElementsByClassName("login")[0].removeAttribute("hidden");
+        }
+    function hide() {
+            document.getElementsByClassName("login")[0].setAttribute("hidden", "hidden");
+        }
+
+
+    $('#comment-form').on('submit', function(event) {
+        event.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'add_comment_ajax' article.slug %}",
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'body': $('#id_body').val()
+            },
+            success: function(response) {
+                if (response.status === 'success') {
+                    var commentHTML = `
+    <li class="comment">
+        <p id="author"><strong>${response.comment.name}</strong> says:</p>
+        <p id="body">${response.comment.body}</p>
+        <hr style="background-color: #91273E;">
+    </li>
+`;
+$('#comment-list ul').append(commentHTML);
+$('#id_body').val('');
+
+                } else {
+                    alert('There was an error adding your comment.');
+                }
+            }
+        });
+    });
+
+</script>
+
+
+</body>
+</html>

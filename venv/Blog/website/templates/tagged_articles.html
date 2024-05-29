@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Articles tagged with "{{ tag.name }}"{% endblock %}
+
+{% block content %}
+
+
+    <h1 style="text-align: center; margin-top: 50px;">Articles tagged with "{{ tag.name }}":</h1>
+<div class="row">
+    {% if articles %}
+    <div class="container-articles">        
+        {% for article in articles %}        
+        <div class="card">
+            <div class="image-wrapper">
+                <img src="{{ article.image.url }}" alt="{{ article.title }}">
+            </div>
+            <div class="card-content">
+                
+                    <h5>{{ article.title }}</h5>
+             
+                <p>Posted by: <strong>{{ article.journalist_users.user.username|striptags }}</strong></p>
+    <a href="{% url 'article_view' article.slug %}" class="btn btn-primary" style="background-color:  #91273E;">Read more</a>            
+</div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No articles found with this tag.</p>
+    {% endif %}
+</div>
+</div>
+
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+   
+   body{
+    display: flex;
+    flex-direction: column;
+   }
+
+.container-articles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  
+}
+
+.card {
+  width: 300px;
+  height: 400px;
+  border-radius: 5px;
+  margin-bottom: 25px;
+  transition: transform 250ms;
+   /* Add transition for smooth effect */
+   
+}
+
+.card:hover {
+  transform: translateY(-20px);
+}
+
+.card:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add shadow on hover */
+}
+
+.image-wrapper {
+  width: 100%;
+  height: 250px; /* Set a fixed height for the image */
+  overflow: hidden; /* Ensure the image does not overflow its container */
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.image-wrapper img {
+  width: 100%;
+  height: 100%; /* Ensure the image fills the container */
+  object-fit: cover; /* Maintain aspect ratio and cover the container */
+}
+
+.card-content {
+  padding: 15px;
+  text-align: center;
+}
+
+.card-content h3 {
+  margin-top: 0;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 40px 7% ;
+}
+</style>
+{% endblock %}

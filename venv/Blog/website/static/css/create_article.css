@@ -1,0 +1,29 @@
+main{
+    margin: 5% 10%;
+}
+
+h1{
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.article input{
+   margin-top: 22px;
+   font-size: 18px;
+   border-radius: 5px;
+   border: none;
+   
+}
+
+.sub{
+    padding: 14px 35px;
+    margin:2% 39%;
+    background-color: #91273E;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    transition: background-color 0.5s ease;
+}
+.sub:hover {
+    background-color: #db5d79;
+  }

@@ -1,0 +1,75 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 80%;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.create-article {
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+}
+
+.article-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.article-table th,
+.article-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.article-table th {
+    background-color: #f2f2f2;
+    color: #333;
+}
+
+.article-table td img.article-image {
+    max-width: 100px;
+    height: auto;
+}
+
+.btn {
+    text-decoration: none;
+    padding: 5px 10px;
+    color: #fff;
+    border-radius: 3px;
+    margin: 0 5px;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-create {
+    background-color: #0275d8;
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+.btn-edit {
+    background-color: #5cb85c;
+}
+
+.btn-delete {
+    background-color: #d9534f;
+}
+
+.btn:hover {
+    opacity: 0.8;
+}

@@ -1,0 +1,41 @@
+<form id="like-form" action="{% url 'like_article' article.id %}" method="POST">
+    {% csrf_token %}
+    <button type="submit" name="article_id" value="{{ article.id }}">LIKE</button>
+</form>
+<form id="dislike-form" action="{% url 'dislike_article' article.id %}" method="POST">
+    {% csrf_token %}
+    <button type="submit" name="article_id" value="{{ article.id }}">DISLIKE</button>
+</form>
+
+<p>
+    total likes: <span id="like_counter">{{ article.like_count }}</span>
+    total dislikes: {{ article.dislike_count }}
+</p>
+<hr>
+<script>
+    $(document).ready(function(){
+        $(document).on('submit', '#like-form', function(event){
+            event.preventDefault(); // Prevent default form submission
+
+            var pk = $(this).find('button[name="article_id"]').val(); // Retrieve article ID
+            var formData = new FormData(); // Create FormData object
+            formData.append('article_id', pk); // Append article ID to FormData
+
+            fetch("{% url 'like_article' %}", {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}' // Include CSRF token in headers
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                $('#like_counter').text(data.result); // Update like count in DOM
+                console.log(data); // Log response data
+            })
+            .catch(error => console.error('Error:', error)); // Log any errors to console
+        });
+    });
+</script>
+
+

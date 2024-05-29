@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Newest articles {% endblock %}
+
+
+{% block content %}
+<h1>Search Results</h1>
+    {% if query %}
+        <p>Showing results for: <strong>{{ query }}</strong></p>
+    {% endif %}
+    {% if articles %}
+    <div class="container mt-5">
+        <div class="row">
+                {% for article in articles %}
+                    <div class="col-md-4 d-flex align-items-stretch">
+                        <div class="card mb-4 shadow-sm w-100">
+                            <img style="height: 250px;" src="{{ article.image.url }}" class="card-img-top" alt="{{ article.title }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ article.title }}</h5>
+                                <p class="card-text">Posted by: <strong>{{ article.journalist_users.user.username|striptags }}</strong></p>
+                                <a href="{% url 'article_view' article.slug %}" class="btn btn-primary">Read more</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                
+        </div>
+    </div>
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+    
+    
+{% endblock %}
+

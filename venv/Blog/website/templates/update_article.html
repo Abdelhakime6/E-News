@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/create_article.css' %}">
+
+  <h1>Update Article</h1>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="sub" type="submit">Save changes</button>
+  </form>
+
+  <script src="https://cdn.tiny.cloud/1/okhqn1bzpdx4gcctxfctufn4mbx13e881owy8h136nci6o5u/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+  <script>
+      // Initialize TinyMCE for the textarea with id 'id_content'
+      document.addEventListener("DOMContentLoaded", function() {
+          tinymce.init({
+              selector: 'textarea#custom_id_for_content',
+              plugins: 'link image code',
+              toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image | code'
+          });
+      });
+  </script>
+{% endblock %}
